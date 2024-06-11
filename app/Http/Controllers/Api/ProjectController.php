@@ -9,9 +9,29 @@ use App\Models\Project;
 class ProjectController extends Controller
 {
     public function index() {
-        $projects = Project::all();
+        $projects = Project::paginate(3);
 
-        return response()-> json($projects);
+        return response()->json([  
+        'success' => true,
+        'results' => $projects
+        ]);       
+    }
+
+    public function show($slug) {
+        $project = Project::where('slug', '=', $slug)->first();
         
+        if($project) {
+            $data = [
+                'success' => true,
+                'project' => $project
+            ];
+        } else {
+            $data = [
+                'success' => false,
+                'error' => 'No project found with this slug'
+            ];
+        }
+
+        return response()->json($data);
     }
 }
